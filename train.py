@@ -29,7 +29,7 @@ itos={i:ch for i,ch in enumerate(chars)}
 encode=lambda s:[stoi[c] for c in s]
 decode=lambda l: ''.join([itos[i] for i in l])
 
-data=torch.tensor(encode(text), dtype=torch.long)
+data=torch.tensor(encode(text), dtype=torch.long, device=device)
 #the data is encoded and stored into a torch tensor
 
 #split data into training data and validation data -- 90%, 10%
@@ -83,14 +83,14 @@ class Head(nn.Module):
         #Compute attention scores -- affinities
         
         wei = q @ k.transpose(-2,-1) * k.shape[-1]**-0.5
-        wei = wei.masked_fill(self.tril[:T, :T] == 0, float('inf')) # mask the values so the future tokens dont comunicate with the past tokens
+        wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf')) # mask the values so the future tokens dont comunicate with the past tokens
         wei = F.softmax(wei, dim=-1) #apply softmax
         wei = self.dropout(wei)
         v = self.value(x) # aggregate the values
         out = wei @ v
         return out
 
-class MultieadAttention(nn.Module):
+class MultiheadAttention(nn.Module):
     """
     multiple heads of self-attention in parallel
     """
@@ -133,7 +133,7 @@ class Block(nn.Module):
         #n_head -- the number of heads we want
         super().__init__()
         head_size = n_embd // n_head
-        self.sa = MultieadAttention(n_head, head_size)
+        self.sa = MultiheadAttention(n_head, head_size)
         self.ffwd = FeedForward(n_embd)
         self.ln1 = nn.LayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
@@ -159,7 +159,7 @@ class GPTLM(nn.Module):
         B,T = idx.shape
         
         tok_emb = self.token_embedding_table(idx) 
-        pos_emb = self.position_embedding_table(torch.arange(T, device=device))
+        pos_emb = self.position_embedding_table(torch.arange(T, device=device, dtype=torch.long))
         x = tok_emb + pos_emb
         x = self.blocks(x) #use one head of self attention
         x = self.ln_f(x)
@@ -205,8 +205,12 @@ for iter in range(max_iters):
     
     logits, loss=model(xb,yb)
     optimizer.zero_grad(set_to_none=True)
+    if torch.isnan(loss) or torch.isinf(loss):
+        print("NaN detected in loss, skipping step.")
+        continue
     loss.backward()
     optimizer.step()
+    print(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
 
 context=torch.zeros((1, 1), dtype=torch.long, device=device)
 print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
