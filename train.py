@@ -212,5 +212,12 @@ for iter in range(max_iters):
     optimizer.step()
     print(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
 
-context=torch.zeros((1, 1), dtype=torch.long, device=device)
-print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
+context = torch.zeros((1, 1), dtype=torch.long, device=device)
+generated_text = decode(model.generate(context, max_new_tokens=5000)[0].tolist())
+
+print(generated_text)
+
+with open("output.txt", "w", encoding="utf-8") as f:
+    f.write(generated_text)
+    
+print("Text saved in output.txt")
