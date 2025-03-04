@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+import os
 torch.manual_seed(2707)
 
 batch_size = 64 # number of independent sequences processed in parallel
@@ -14,6 +15,8 @@ n_embd = 384
 n_head = 6
 n_layer = 6
 dropout = 0.2
+checkpoint_path = "gpt_model_checkpoint.pth"  # Path to save/load the model
+
 
 with open("input.txt", 'r', encoding='utf-8') as f:
     text=f.read()
@@ -197,20 +200,32 @@ m=model.to(device)
 
 optimizer=torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
-for iter in range(max_iters):
-    if iter % eval_interval == 0 or iter == max_iters -1:
-        losses = estimate_loss()
-        print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
-    xb,yb = get_batch('train')
+#training/ model loading
+if os.path.exists(checkpoint_path):
+    print("Loading model from checkpoint...")
+    checkpoint = torch.load(checkpoint_path)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    print("Model loaded successfully.")
+else:
+    print("No checkpoint found. Training from scratch...")
+    for iter in range(max_iters):
+        if iter % eval_interval == 0 or iter == max_iters -1:
+            losses = estimate_loss()
+            print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+        xb,yb = get_batch('train')
     
-    logits, loss=model(xb,yb)
-    optimizer.zero_grad(set_to_none=True)
-    if torch.isnan(loss) or torch.isinf(loss):
-        print("NaN detected in loss, skipping step.")
-        continue
-    loss.backward()
-    optimizer.step()
-    print(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
+        logits, loss=model(xb,yb)
+        optimizer.zero_grad(set_to_none=True)
+        if torch.isnan(loss) or torch.isinf(loss):
+            print("NaN detected in loss, skipping step.")
+            continue
+        loss.backward()
+        optimizer.step()
+        print(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
+    torch.save({'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict()}, checkpoint_path)
+    print("Training complete. Model saved.")
 
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
 generated_text = decode(model.generate(context, max_new_tokens=5000)[0].tolist())
