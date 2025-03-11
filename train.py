@@ -14,7 +14,7 @@ eval_iters = 200
 n_embd = 384
 n_head = 6
 n_layer = 6
-dropout = 0.2
+dropout = 0.3
 checkpoint_path = "gpt_model_checkpoint.pth"  # Path to save/load the model
 
 
@@ -36,7 +36,7 @@ data=torch.tensor(encode(text), dtype=torch.long, device=device)
 #the data is encoded and stored into a torch tensor
 
 #split data into training data and validation data -- 90%, 10%
-n=int(0.9*len(data))
+n=int(0.85*len(data))
 train_data=data[:n]
 val_data=data[n:]
 
