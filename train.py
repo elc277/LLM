@@ -224,7 +224,7 @@ else:
             continue
         loss.backward()
         optimizer.step()
-        print(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
+        #print(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
     torch.save({'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict()}, checkpoint_path)
     print("Training complete. Model saved.")
