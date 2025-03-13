@@ -72,3 +72,25 @@ and data split 85-15
 
 Training loss=1.2401
 Validation loss=1.6301
+
+
+5.
+results with hyperparameters:
+batch_size = 64 
+block_size = 256 
+max_iters = 7000
+eval_interval = 500
+learning_rate = 3e-4
+eval_iters = 200
+n_embd = 384
+n_head = 6
+n_layer = 6
+dropout = 0.27
+
+and data split 85-15
+
+Training loss=TBD
+Validation loss=TBD
+
+added at line 203 weight_decay=1e-2
+added at line 204 a scheduler with step_size=1000, gamma=0.9

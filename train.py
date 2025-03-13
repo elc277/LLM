@@ -7,15 +7,15 @@ torch.manual_seed(2707)
 #hyperparameters
 batch_size = 64 # number of independent sequences processed in parallel
 block_size = 256 # maximum context length for predictions
-max_iters = 6000
+max_iters = 7000
 eval_interval = 500
-learning_rate = 2e-4
+learning_rate = 3e-4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 eval_iters = 200
 n_embd = 384
 n_head = 6
 n_layer = 6
-dropout = 0.35
+dropout = 0.27
 checkpoint_path = "gpt_model_checkpoint.pth"  # Path to save/load the model
 #-----------------
 
@@ -200,7 +200,8 @@ m=model.to(device)
 #print(logits.shape)
 #print(loss)
 
-optimizer=torch.optim.AdamW(model.parameters(), lr=learning_rate)
+optimizer=torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-2)
+scheduler=torch.optim.lr_scheduler.StepLR(optimizer, step_size=1000, gamma=0.9)
 
 #training/ model loading
 if os.path.exists(checkpoint_path):
