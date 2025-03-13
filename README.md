@@ -52,5 +52,23 @@ dropout = 0.4
 
 and data split 85-15
 
+Training loss=1.3320
+Validation loss=1.7277
+
+4.
+results with hyperparameters:
+batch_size = 64 
+block_size = 256 
+max_iters = 6000
+eval_interval = 500
+learning_rate = 2e-4
+eval_iters = 200
+n_embd = 384
+n_head = 6
+n_layer = 6
+dropout = 0.35
+
+and data split 85-15
+
 Training loss=TBD
 Validation loss=TBD
