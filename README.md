@@ -70,5 +70,5 @@ dropout = 0.35
 
 and data split 85-15
 
-Training loss=TBD
-Validation loss=TBD
+Training loss=1.2401
+Validation loss=1.6301
