@@ -1,2 +1,4 @@
 #ignore model
 gpt_model_checkpoint.pth
+bpe_tokenizer.json
+output.txt
