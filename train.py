@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 import os
-import matplotlib as plt
+import matplotlib.pyplot as plt
 torch.manual_seed(2707)
 
 #hyperparameters
@@ -227,6 +227,9 @@ m=model.to(device)
 optimizer=torch.optim.AdamW(model.parameters(), lr=learning_rate) #weight_decay=1e-2
 #scheduler=torch.optim.lr_scheduler.StepLR(optimizer, step_size=1000, gamma=0.9)
 
+last_train_loss = None
+last_val_loss = None
+
 #training/ model loading
 if os.path.exists(checkpoint_path):
     print("Loading model from checkpoint...")
@@ -244,6 +247,8 @@ else:
             losses = estimate_loss()
             train_losses.append(losses['train'].item())
             val_losses.append(losses['val'].item())
+            last_train_loss = losses['train'].item()
+            last_val_loss = losses['val'].item()
             print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
         xb,yb = get_batch('train')
     
