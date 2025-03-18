@@ -1,7 +1,7 @@
 import math
 import spacy
 from textblob import TextBlob
-from train import last_train_loss, last_val_loss
+#from train import last_train_loss, last_val_loss
 
 #perplexity
 def compute_perplexity(loss):
@@ -9,8 +9,8 @@ def compute_perplexity(loss):
     return math.exp(loss)
 
 # Compute perplexity for both train and validation loss
-train_ppl = compute_perplexity(last_train_loss)
-val_ppl = compute_perplexity(last_val_loss)
+train_ppl = compute_perplexity(1.0553)
+val_ppl = compute_perplexity(1.4894)
 
 print(f"Train Perplexity: {train_ppl:.2f}")
 print(f"Validation Perplexity: {val_ppl:.2f}")
