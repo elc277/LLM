@@ -2,6 +2,7 @@ import math
 import spacy
 from textblob import TextBlob
 
+#perplexity
 def compute_perplexity(loss):
     """Compute perplexity from loss"""
     return math.exp(loss)
@@ -12,8 +13,27 @@ val_ppl = compute_perplexity(1.4894)
 
 print(f"Train Perplexity: {train_ppl:.2f}")
 print(f"Validation Perplexity: {val_ppl:.2f}")
+#---------------
 
 
+#Repeated N-Grams
+from collections import Counter
+
+def check_ngram_repetition(text, n=3):
+    words = text.split()
+    ngrams = [tuple(words[i:i+n]) for i in range(len(words)-n+1)]
+    ngram_counts = Counter(ngrams)
+    
+    most_common_ngrams = ngram_counts.most_common(10)  # Top 10 repeated sequences
+    return most_common_ngrams
+
+with open("output.txt", "r", encoding="utf-8") as f:
+    generated_text = f.read()
+
+print("Most Common 3-Gram Repetitions:", check_ngram_repetition(generated_text))
+#-----------------
+
+#Sentiment Analysis
 # Load spaCy model
 nlp = spacy.load("en_core_web_sm")
 
@@ -45,3 +65,4 @@ for line in generated_text[:50]:  # Limit to first 50 lines for quick evaluation
 # Calculate the overall sentiment of the generated text
 overall_sentiment = sum(sentiments) / len(sentiments)
 print(f"Overall Sentiment of Generated Text: {overall_sentiment:.3f}")
+#----------------
