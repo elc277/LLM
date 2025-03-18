@@ -35,8 +35,7 @@ print("Most Common 3-Gram Repetitions:", check_ngram_repetition(generated_text))
 
 #Sentiment Analysis
 
-#install spacy and textblob:
-#pip install spacy textblob
+#install dependency:
 #python -m spacy download en_core_web_sm
 # Load spaCy model
 nlp = spacy.load("en_core_web_sm")
