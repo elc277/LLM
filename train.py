@@ -43,6 +43,9 @@ n=int(0.9*len(data))
 train_data=data[:n]
 val_data=data[n:]
 
+train_losses = []
+val_losses = []
+
 def get_batch(split):
     """
     data loading
@@ -239,6 +242,8 @@ else:
     for iter in range(max_iters):
         if iter % eval_interval == 0 or iter == max_iters -1:
             losses = estimate_loss()
+            train_losses.append(losses['train'].item())
+            val_losses.append(losses['val'].item())
             print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
         xb,yb = get_batch('train')
     
@@ -263,3 +268,12 @@ with open("output.txt", "w", encoding="utf-8") as f:
     f.write(generated_text)
     
 print("Text saved in output.txt")
+
+#loss curve plot, after training
+plt.plot(train_losses, label="Training Loss")
+plt.plot(val_losses, label="Validation Loss")
+plt.xlabel("Evaluation Interval")
+plt.ylabel("Loss")
+plt.title("Training vs Validation Loss")
+plt.legend()
+plt.show()
