@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 import os
+import matplotlib as plt
 torch.manual_seed(2707)
 
 #hyperparameters
@@ -67,6 +68,26 @@ def estimate_loss():
         out[split]=losses.mean()
     model.train()
     return out
+
+@torch.no_grad()
+def evaluate_accuracy(model, data, num_samples=1000):
+    """
+    num_samples = number of batches used to estimate character-level accuracy of the model
+    higher num_samples => more accurate evaluation
+    """
+    model.eval()
+    correct = 0
+    total = 0
+    for _ in range(num_samples):
+        x, y = get_batch('val')  # Get a validation batch
+        logits, _ = model(x)
+        
+        predictions = torch.argmax(logits, dim=-1)  # Get the highest probability token
+        correct += (predictions == y).sum().item()
+        total += y.numel()
+    model.train()
+    return correct / total
+
 
 class Head(nn.Module):
     """
@@ -210,6 +231,9 @@ if os.path.exists(checkpoint_path):
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     print("Model loaded successfully.")
+    
+    val_accuracy = evaluate_accuracy(model, val_data)
+    print(f"Character-Level Accuracy: {val_accuracy:.4f}")
 else:
     print("No checkpoint found. Training from scratch...")
     for iter in range(max_iters):
