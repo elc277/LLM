@@ -247,8 +247,8 @@ else:
             losses = estimate_loss()
             train_losses.append(losses['train'].item())
             val_losses.append(losses['val'].item())
-            last_train_loss = losses['train'].item()
-            last_val_loss = losses['val'].item()
+            last_train_loss.append(losses['train'].item())
+            last_val_loss.append(['val'].item())
             print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
         xb,yb = get_batch('train')
     
@@ -275,10 +275,12 @@ with open("output.txt", "w", encoding="utf-8") as f:
 print("Text saved in output.txt")
 
 #loss curve plot, after training
+plt.figure(figsize=(10, 5))
 plt.plot(train_losses, label="Training Loss")
 plt.plot(val_losses, label="Validation Loss")
 plt.xlabel("Evaluation Interval")
 plt.ylabel("Loss")
 plt.title("Training vs Validation Loss")
 plt.legend()
+plt.savefig("loss_plot.png")
 plt.show()
