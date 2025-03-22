@@ -1,96 +1,109 @@
-# LLM
+GPT Character-Level Language Model
 
-1.
-results with hyperparameters:
-batch_size = 64 
-block_size = 256 
-max_iters = 5000
-eval_interval = 500
-learning_rate = 3e-4
-eval_iters = 200
-n_embd = 384
-n_head = 6
-n_layer = 6
-dropout = 0.2
+This repository contains a transformer-based character-level language model built using PyTorch. The model is trained on Shakespeare's *Coriolanus* to learn and generate text in a similar literary style. The project includes:
 
-and data split 90-10
+- A custom GPT implementation (`train.py`)
+- An evaluation toolkit for analyzing the generated text (`eval_functions.py`)
+- A simpler Bigram baseline model (`BigramLM.py`)
 
-Training loss=1.0553
-Validation loss=1.4894
+---
 
-2.
-results with hyperparameters:
-batch_size = 64 
-block_size = 256 
-max_iters = 5000
-eval_interval = 500
-learning_rate = 3e-4
-eval_iters = 200
-n_embd = 384
-n_head = 6
-n_layer = 6
-dropout = 0.3
+## 📂 Project Structure
+├── input.txt # Training corpus (Shakespeare's Coriolanus) ├── train.py # Transformer-based GPT training script ├── eval_functions.py # Perplexity, n-gram, sentiment, and entity analysis ├── BigramLM.py # A simple bigram language model for comparison ├── output.txt # Generated text after model inference ├── loss_plot.png # Loss curve (train vs val) ├── perplexity_comparison.png ├── ngram_repetition.png ├── sentiment_histogram.png ├── sentiment_trend.png └── entity_frequency.png
 
-and data split 85-15
+## 🚀 Model Overview
 
-Training loss=1.1126
-Validation loss=1.6642
+The main model in `train.py` is a GPT-style Transformer built from scratch with:
+
+- Multi-head self-attention
+- Positional and token embeddings
+- 6 Transformer blocks
+- Character-level tokenization
+- Context window of 256 characters
+
+### Training Details
+
+| Parameter         | Value     |
+|------------------|-----------|
+| Batch Size       | 64        |
+| Block Size       | 256       |
+| Embedding Size   | 384       |
+| Heads            | 6         |
+| Layers           | 6         |
+| Dropout          | 0.2       |
+| Learning Rate    | 3e-4      |
+| Iterations       | 5000      |
+| Device           | GPU/CPU   |
+
+The model is trained to predict the next character given a sequence of preceding characters.
+
+---
+
+## 📈 Evaluation & Analysis
+
+`eval_functions.py` provides tools to evaluate the generated output on several fronts:
+
+- **Perplexity Calculation**  
+  Estimates model confidence in predictions.
+
+- **Repeated N-gram Detection**  
+  Detects redundancy in generation using top-10 repeated trigrams.
+
+- **Sentiment Analysis**  
+  Uses `TextBlob` for polarity scoring and `spaCy` for named entity recognition.
+
+- **Visualization Plots**
+  - `perplexity_comparison.png`
+  - `ngram_repetition.png`
+  - `sentiment_histogram.png`
+  - `sentiment_trend.png`
+  - `entity_frequency.png`
+
+---
+
+## 💡 Highlights
+
+- **Model Checkpointing**  
+  Automatically loads from or saves to `gpt_model_checkpoint.pth`.
+
+- **Generation**  
+  Post-training, the model generates ~5000 characters of text and writes it to `output.txt`.
+
+- **Visualization**  
+  After training, it plots the training and validation loss across intervals.
+
+---
+
+## 🧪 Running the Code
+
+### 1. Install Dependencies
+
+```bash
+pip install torch textblob spacy matplotlib
+python -m textblob.download_corpora
+python -m spacy download en_core_web_sm
+```
+
+### 2. Train the Model
+
+```bash
+python train.py
+```
+If a checkpoint exists, training resumes from it. Otherwise, it trains from scratch.
+
+### 3. Evaluate the Output
+
+```bash
+python eval_functions.py
+```
+This will generate and save various plots and print analysis metrics.
 
 
-3.
-results with hyperparameters:
-batch_size = 64 
-block_size = 256 
-max_iters = 5000
-eval_interval = 500
-learning_rate = 3e-4
-eval_iters = 200
-n_embd = 256
-n_head = 6
-n_layer = 5
-dropout = 0.4
+### Future Improvements
+Switch to subword or word-level tokenization
 
-and data split 85-15
+Add attention visualizations
 
-Training loss=1.3320
-Validation loss=1.7277
+Incorporate learning rate schedulers
 
-4.
-results with hyperparameters:
-batch_size = 64 
-block_size = 256 
-max_iters = 6000
-eval_interval = 500
-learning_rate = 2e-4
-eval_iters = 200
-n_embd = 384
-n_head = 6
-n_layer = 6
-dropout = 0.35
-
-and data split 85-15
-
-Training loss=1.2401
-Validation loss=1.6301
-
-
-5.
-results with hyperparameters:
-batch_size = 64 
-block_size = 256 
-max_iters = 7000
-eval_interval = 500
-learning_rate = 3e-4
-eval_iters = 200
-n_embd = 384
-n_head = 6
-n_layer = 6
-dropout = 0.27
-
-and data split 85-15
-
-Training loss=TBD
-Validation loss=TBD
-
-added at line 203 weight_decay=1e-2
-added at line 204 a scheduler with step_size=1000, gamma=0.9
+Extend to multi-GPU or distributed training
