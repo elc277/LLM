@@ -227,8 +227,8 @@ m=model.to(device)
 optimizer=torch.optim.AdamW(model.parameters(), lr=learning_rate) #weight_decay=1e-2
 #scheduler=torch.optim.lr_scheduler.StepLR(optimizer, step_size=1000, gamma=0.9)
 
-last_train_loss = None
-last_val_loss = None
+last_train_loss = []
+last_val_loss = []
 
 #training/ model loading
 if os.path.exists(checkpoint_path):
