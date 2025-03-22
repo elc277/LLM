@@ -227,8 +227,11 @@ m=model.to(device)
 optimizer=torch.optim.AdamW(model.parameters(), lr=learning_rate) #weight_decay=1e-2
 #scheduler=torch.optim.lr_scheduler.StepLR(optimizer, step_size=1000, gamma=0.9)
 
-last_train_loss = []
-last_val_loss = []
+train_losses = []
+val_losses = []
+
+last_train_loss = 0.0
+last_val_loss = 0.0
 
 #training/ model loading
 if os.path.exists(checkpoint_path):
@@ -245,11 +248,17 @@ else:
     for iter in range(max_iters):
         if iter % eval_interval == 0 or iter == max_iters -1:
             losses = estimate_loss()
-            train_losses.append(losses['train'].item())
-            val_losses.append(losses['val'].item())
-            last_train_loss.append(losses['train'].item())
-            last_val_loss.append(['val'].item())
-            print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+            
+            train_loss_val = losses['train'].item()
+            val_loss_val = losses['val'].item()
+            
+            train_losses.append(train_loss_val)
+            val_losses.append(val_loss_val)
+            
+            last_train_loss = train_loss_val
+            last_val_loss = val_loss_val
+            
+            print(f"step {iter}: train loss {last_train_loss:.4f}, val loss {last_val_loss:.4f}")
         xb,yb = get_batch('train')
     
         logits, loss=model(xb,yb)
