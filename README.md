@@ -17,19 +17,9 @@ This repository contains a transformer-based character-level language model buil
 
 ├── BigramLM.py # A simple bigram language model for comparison 
 
-├── output.txt # Generated text after model inference 
+├── test.py # Code to check if the computer has cuda installed and working 
 
-├── loss_plot.png # Loss curve (train vs val) 
-
-├── perplexity_comparison.png 
-
-├── ngram_repetition.png 
-
-├── sentiment_histogram.png 
-
-├── sentiment_trend.png 
-
-└── entity_frequency.png
+└── output.txt # Generated text after model inference 
 
 ## Model Overview
 
