@@ -10,15 +10,25 @@ This repository contains a transformer-based character-level language model buil
 
 ## 📂 Project Structure
 ├── input.txt # Training corpus (Shakespeare's Coriolanus) 
+
 ├── train.py # Transformer-based GPT training script 
+
 ├── eval_functions.py # Perplexity, n-gram, sentiment, and entity analysis 
+
 ├── BigramLM.py # A simple bigram language model for comparison 
+
 ├── output.txt # Generated text after model inference 
+
 ├── loss_plot.png # Loss curve (train vs val) 
+
 ├── perplexity_comparison.png 
+
 ├── ngram_repetition.png 
+
 ├── sentiment_histogram.png 
+
 ├── sentiment_trend.png 
+
 └── entity_frequency.png
 
 ## Model Overview
