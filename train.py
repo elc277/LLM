@@ -39,7 +39,7 @@ data=torch.tensor(encode(text), dtype=torch.long, device=device)
 #the data is encoded and stored into a torch tensor
 
 #split data into training data and validation data -- 90%, 10%
-n=int(0.9*len(data))
+n=int(0.85*len(data))
 train_data=data[:n]
 val_data=data[n:]
 
